@@ -2,37 +2,10 @@
   (:gen-class)
   (:require [clojure.string :as s]
             [chess.piece :refer [piece->unicode-string]]
-            [chess.board :refer [start-position]]))
-
-(defn letter->number [l]
-  (case l
-    :a 1
-    :b 2
-    :c 3
-    :d 4
-    :e 5
-    :f 6
-    :g 7
-    :h 8
-    nil))
-
-(defn number->letter [n]
-  (case n
-    1 :a
-    2 :b
-    3 :c
-    4 :d
-    5 :e
-    6 :f
-    7 :g
-    8 :h
-    nil))
-
-
-(defn move-piece [board from to]
-  (let [piece (from board)
-        board-without-piece (dissoc board from)]
-    (assoc board-without-piece (keyword to) piece)))
+            [chess.board :as board :refer [start-position]]
+            [chess.moves :as moves :refer [move-piece]]
+            [chess.utils :refer [number->letter]]
+            ))
 
 (defn print-board [board]
   (doseq [y (range 8 0 -1)]
@@ -58,24 +31,9 @@
   )
 
 (def game-state
-  (atom {:board start-position
+  (atom {:board board/only-pawns ;start-position
          :turn :white}))
 
-(defn pawn-moves [board-state]
-  (let [board (:board board-state)
-        pawns (select-keys board
-                           (for [[k v] board :when (and
-                                                    (= (:color v) :white)
-                                                    (= (:type v) :pawn))] k))]
-    pawns
-    (for [[k v] pawns]
-      k
-      )
-    )
-  )
-
-(defn moves-for-pawn []
-  )
 
 (defn -main
   "I don't do a whole lot ... yet."
