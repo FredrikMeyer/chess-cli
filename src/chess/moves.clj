@@ -47,9 +47,6 @@
       (= y 2)
       (= y 7))))
 
-;; board-state, position -> list[moves] ?
-;; dispatch på piece-type
-
 (defn moves-for-pawn [board-state position]
   (let [board (:board board-state)
         piece (position board)
@@ -60,7 +57,7 @@
       [(move-forward board-state position)]
       )))
 
-(defn moves-for-knight [board-state position]
+(defn moves-for-knight [_ position]
   (let [[x y] (u/square->coordinate-pair position)
         knight-moves (mapcat identity (for [a [-2 2] b [-1 1]] [[a b] [b a]]))
         raw-moves (map (fn [[a b]] [(+ a x) (+ b y)]) knight-moves)]
@@ -71,6 +68,57 @@
                        :from position
                        :to sq
                        })))))
+
+(defn moves-for-rook [_ position]
+  (let [[x y] (u/square->coordinate-pair position)
+        row (-> x (u/number->letter) (u/get-file))
+        file (u/get-rank y)]
+    (->> (concat row file)
+        (distinct)
+        (filter (fn [sq] (not= sq position)))
+        (map (fn [sq] {
+                       :from position
+                       :to sq
+                       })))))
+
+(defn moves-for-bishop [_ position]
+  (let [diagonals (u/get-diagonals position)]
+    (->> diagonals
+         (filter (fn [sq] (not= sq position)))
+         (map (fn [sq] {
+                        :from position
+                        :to sq
+                        })))))
+
+(defn moves-for-king [_ position]
+  (let [[x y] (u/square->coordinate-pair position)]
+    (->> (for [dx [-1 0 1] dy [-1 0 1]]
+           [(+ x dx) (+ y dy)])
+         (filter u/coordinate-is-inside-board)
+         (map u/coordinate-pair->square)
+         (filter (fn [sq] (not= sq position)))
+         (map (fn [sq] {
+                        :from position
+                        :to sq
+                        })))))
+
+(defn moves-for-queen [board-state position]
+  (concat (moves-for-bishop board-state position)
+          (moves-for-rook board-state position)))
+
+(defn moves-for-piece [board-state position]
+  (let [board (:board board-state)
+        piece (position board)
+        type (:type piece)]
+    (case type
+      :pawn (moves-for-pawn board-state position)
+      :rook (moves-for-rook board-state position)
+      :knight (moves-for-rook board-state position)
+      :bishop (moves-for-bishop board-state position)
+      :king (moves-for-king board-state position)
+      :queen (moves-for-queen board-state position)
+      nil (throw (AssertionError. (str "No piece at position: " position)))
+      (throw (AssertionError. (str "Unknown piece type: " type))))))
 
 
 (defn pawn-moves [board-state]
@@ -83,11 +131,4 @@
                          (move-forward board-state k))
         two-step-moves (for [[k _] pawns]
                          (move-two-forward board-state k))]
-    (concat one-step-moves two-step-moves)
-    )
-  )
-
-
-
-(defn test-f []
-  (fn [] 2))
+    (concat one-step-moves two-step-moves)))
