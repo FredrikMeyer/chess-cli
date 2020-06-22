@@ -4,13 +4,13 @@ FIXME: description
 
 ## Installation
 
-Download from http://example.com/FIXME.
+TODO
 
 ## Usage
 
 FIXME: explanation
 
-    $ java -jar test-cli-0.1.0-standalone.jar [args]
+    $ lein run
 
 ## Options
 
