@@ -1,5 +1,5 @@
 (ns chess.moves
-  (:require [chess.utils :as u :refer [letter->number]]))
+  (:require [chess.utils :as u]))
 
 (defn move-piece [board from to]
   (let [piece (from board)
@@ -22,8 +22,7 @@
     {
      :from square
      :to new-letter-coord
-     }
-    ))
+     }))
 
 (defn move-two-forward
   [board-state square]
@@ -39,7 +38,6 @@
      }
     )
   )
-
 
 (defn start-position-for-pawn? [position color]
   (let [[_ y] (u/square->coordinate-pair position)]
@@ -121,6 +119,7 @@
       (throw (AssertionError. (str "Unknown piece type: " type))))))
 
 
+;;; NOT USED?
 (defn pawn-moves [board-state]
   (let [board (:board board-state)
         pawns (select-keys board

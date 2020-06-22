@@ -30,10 +30,17 @@
     )
   )
 
-(def game-state
-  (atom {:board board/only-pawns ;start-position
-         :turn :white}))
+(defn all-moves [board-state]
+  (let [board (:board board-state)
+        turn (:turn board-state)
+        occupied-squares (filter (fn [sq] (= turn (:color (sq board)))) (keys board))]
+    (flatten
+     (for [sq occupied-squares]
+       (moves/moves-for-piece board-state sq)))))
 
+(def game-state
+  (atom {:board board/start-position  ;;board/only-pawns ;start-position
+         :turn :white}))
 
 (defn -main
   "I don't do a whole lot ... yet."
@@ -58,6 +65,7 @@
     (print "\r")
     ;; (pr x)
     (println)
+    (println "Available moves at: " (count (all-moves @game-state)))
     (println "Which move? (write [from] [to])")
     (when (< num-moves 5)
       (recur (read-line) (inc num-moves)))
