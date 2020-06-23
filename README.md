@@ -49,3 +49,4 @@ at https://www.gnu.org/software/classpath/license.html.
  - [Some terminal control sequences](https://www.student.cs.uwaterloo.ca/~cs452/terminal.html)
  - [Build your own command line with ANSI escape codes](https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#background-colors)
  - [Command line apps with Clojure + GraalVM](https://www.astrecipes.net/blog/2018/07/20/cmd-line-apps-with-clojure-and-graalvm/)
+ - [Clojure Lanterna - screens](http://multimud.github.io/clojure-lanterna/3-screens)
